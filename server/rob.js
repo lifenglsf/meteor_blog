@@ -252,7 +252,7 @@ var rob = function(start){
 		if(checkDates.length == 0){
 			getCheckDate();
 		}
-		if(tmphours < 12 && checkDates[hours] == false){
+		if(tmphours < 9 && checkDates[hours] == false){
 			console.log('before data');
 			data = getData();
 			console.log('after data');
