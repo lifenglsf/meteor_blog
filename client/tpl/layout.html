@@ -1,0 +1,28 @@
+<head>
+  <title>TomLi'Blog</title>
+</head>
+
+<body>
+</body>
+	<template name="common">
+	<ul class="nav nav-tabs">
+	{{#each nav}}
+	{{#if isselect}}
+  <li role="presentation" class="active"><a href="/category/{{_id}}">{{name}}</a></li>
+{{else}}
+<li role="presentation" ><a href="/category/{{_id}}">{{name}}</a></li>
+{{/if}}
+{{/each}}
+  <li role="presentation"><a href="/about">关于我</a></li>
+</ul>	
+		
+	  	{{> yield}}
+		<div id = "alert_placeholder" style=""></div>
+	  	<footer>
+	  		<span>Authored TomLi</span>
+	    </footer>
+		<div id="contents"></div>
+	</template>
+<template name="aboutme">
+just a phper
+</template>
