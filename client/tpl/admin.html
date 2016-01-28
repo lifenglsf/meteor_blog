@@ -1,0 +1,140 @@
+<Template name="addCategory">
+	<form name="addCategory" id="addCategory" class="form-horizontal">
+		<div class="form-group">
+			<label class="control-label col-sm-2">分类名称</label>
+			<div class="col-sm-10">
+				<input type="text" name="name" id="name" class="form-control" placeholder="请输入分类名称">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label col-sm-2">分类英文名称</label>
+			<div class="col-sm-10">
+				<input type="text" name="enname" id="enname" class="form-control" placeholder="请输入英文分类名称">
+			</div>
+		</div>
+		<div class="form-group">
+		<label class="control-label col-sm-2">是否显示</label>
+		<div class="col-sm-10">
+			<label class="radio-inline">
+ 			 <input type="radio" id="status1" value="1" name="status"> 显示
+			</label>	
+			<label class="radio-inline">
+  			<input type="radio" id="status2" value="2" name="status"> 不显示
+			</label>
+		</div>
+		
+		</div>
+		<div class="form-group">
+			<div class="col-sm-10 col-sm-offset-2">
+				<button class="btn btn-primary">提交</button>
+			</div>
+		</div>
+	</form>
+</Template>
+<Template name="addArticle">
+<form name="addArticle" id="addArticle" class="form-horizontal">
+	<div class="form-group">
+		<label class="control-label col-sm-2">标题</label>
+		<div class="col-sm-10">
+			<input type="text" name="title" id="title" maxlength="128" required placeholder="请输入文章标题" class="form-control">
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="control-label col-sm-2">文章分类</label>
+		<div class="col-sm-10">
+			<select name="category" id="category" class="form-control">
+				{{#each categoryList}}
+					<option value="{{_id}}">{{name}}</option>
+				{{/each}}
+			</select>	
+		</div>
+	
+	</div>
+	<div class="form-group">
+		<label class="control-label col-sm-2">摘要</label>
+		<div class="col-sm-10">
+			<textarea name="desc" id="desc" class="form-control" manxlength="255" placeholder="请输入内容摘要"></textarea>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="control-label col-sm-2">文章内容</label>
+		<div class="col-sm-10">
+		
+			<div id="content"></div>
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="col-sm-10 col-sm-offset-2">
+		<button class="btn btn-primary" id="add-article-btn">提交</button>
+		</div>
+	
+	</div>
+</form>
+</Template>
+<Template name="adminListArticle">
+ {{#if articleList}}	
+<table class="table table-responsive">
+		<thead>
+			<tr>
+				<th>标题</th>
+				<th>分类</th>
+				<th>操作</th>
+			</tr>
+		</thead>
+		<tbody>
+			{{#each articleList}}
+				<tr>
+					<td>{{title}}</td>
+					<td>{{categoryname}}</td>
+					<td><a href="/admin/article/edit/{{_id}}">编辑</a></td>
+				</tr>
+			{{/each}}
+		</tbody>
+	</table>
+{{/if}}
+</Template>
+<Template name="editArticle">
+ {{#if _id}}
+<form name="editArticle" id="editArticle" class="form-horizontal">
+	<div class="form-group">
+		<label class="control-label col-sm-2">标题</label>
+		<div class="col-sm-10">
+			<input type="text" name="title" id="title" class="form-control" placeholder="请输入标题" value="{{title}}" required>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="control-label col-sm-2">描述</label>
+		<div class="col-sm-10">
+			<textarea name="desc" id = "desc" required>{{desc}}</textarea>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="control-label col-sm-2">分类</label>
+		<div class="col-sm-10">
+			<select name="category" id="category" class="form-control">
+				{{#each categoryList}}
+					{{#if isselect}}
+						<option value="{{_id}}" selected>{{name}}</option>
+					{{else}}
+						<option value="{{_id}}">{{name}}</option>
+					{{/if}}	
+				
+				{{/each}}
+			
+			</select>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="control-label col-sm-2">文章内容</label>
+		<div class="col-sm-10">
+			<div id="content">{{{content}}}</div>
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="col-sm-10 col-sm-offset-2">
+			<button class="btn btn-primary">提交</button>
+		</div>
+	</div>
+</form>
+{{/if}}
+</Template>

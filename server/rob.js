@@ -223,32 +223,17 @@ var getData = function(){
 	Meteor.setTimeout(visit,interval);
 	
 }
-var rob = function(start){
-	if(start == 1){
-		data = getData();
-		if(data.length == 0){
-			rob(1);
-		}else{
-			//Email.send('lifenglsf@163.com','lifeng@meteor.com','rob get data test',new Date());
-			//robs.insert({data:data,time:new Date()})
-			_.each(data,function(ele,index){
-				//console.log(ele.qhb_time.luck_id)
-				var lid = ele.qhb_time.luck_id;
-				minutesecond.push(ele.qhb_time.start_time);
-				tmpsign = hex_sha1('luck_id='+lid+'&user_id='+user_id+'&token='+token);
-				tmptime = ele.qhb_time.start_time.split(':');
-				param[tmptime[0]] = {};
-				param[tmptime[0]]['luck_id'] = lid;
-				param[tmptime[0]]['sign'] = tmpsign;
-				param[tmptime[0]]['user_id'] = user_id;
-				param[tmptime[0]]['minute'] = tmptime[1];
-
-			})
-		}
+var checkDates = [];
+function getCheckDate(){
+	for(var i=0;i<=23;i++){
+		checkDates[i] = false;
 	}
+}
+
+var rob = function(start){
 	now = new Date();
-	minute = now.getMinutes();
-	hours = now.getHours();
+	minute = now.getUTCMinutes();
+	hours = now.getUTCHours();
 	tmphours = hours+8;
 	if(tmphours > 24){
 		hours = tmphours-24;
@@ -258,40 +243,62 @@ var rob = function(start){
 	if(hours < 10){
 		hours = '0'+hours;
 	}
-	//console.log(hours);
-	////
+	if(typeof(data) == 'undefined' || data.length == 0){
+		data = getData();
+		while(!data.length){
+			data = getData();
+		}
+	}else{
+		if(checkDates.length == 0){
+			getCheckDate();
+		}
+		if(tmphours < 9 && checkDates[hours] == false){
+			console.log('before data');
+			data = getData();
+			console.log('after data');
+			checkDates[hours] = true;
+			param = {};
+		}
+	}
+	if(param['dealed'] !== true){
+	_.each(data,function(ele,index){
+		var lid = ele.qhb_time.luck_id;
+		minutesecond.push(ele.qhb_time.start_time);
+		tmpsign = hex_sha1('luck_id='+lid+'&user_id='+user_id+'&token='+token);
+		tmptime = ele.qhb_time.start_time.split(':');
+		param[tmptime[0]] = {};
+		param[tmptime[0]]['luck_id'] = lid;
+		param[tmptime[0]]['sign'] = tmpsign;
+		param[tmptime[0]]['user_id'] = user_id;
+		param[tmptime[0]]['minute'] = tmptime[1];
+		param['dealed'] = true
+	});
+	}
 	if(typeof(param[hours]) != 'undefined' && param[hours]['success'] != 1){
 		console.log(hours,'robed once');
 		robres = HTTP.post(roburl,{params:{luck_id:param[hours]['luck_id'],sign:param[hours]['sign'],user_id:param[hours]['user_id']},headers:{'Content-Type':'application/x-www-form-urlencoded'}});
 		robdata = robres.data;
-		//Email.send('lifenglsf@163.com','lifeng@meteor.com','rob rob',new Date());
-		//console.log({params:{luck_id:param[hours]['luck_id'],sign:param[hours]['sign'],user_id:param[hours]['user_id']}});
-		//console.log(robdata);
+		console.log(robdata);
 		if(robdata.status == 0){
 			param[hours]['success'] = 1
-			//logs.insert({'succ':1,'data':robdata});
 			Meteor.setTimeout(rob,300);
 		}else if(robdata.status == 412){
 			param[hours]['success'] = 1
-			//logs.insert({'succ':0,'data':robdata});
 			Meteor.setTimeout(rob,300);
 		}else if(robdata.status == 409){
-			console.log(robdata);
-			rob(1);
+			data = getData();
+			param = {};
+			rob();
 		}else if(robdata.status == 500){
 			console.log(robdata);
-			//log.insert({'succ':0,'data':robdata});
 			Meteor.setTimeout(rob,500);
 		}else{
 			Meteor.setTimeout(rob,200);
 		}
 	}else{
-		//console.log(new Date());
 		Meteor.setTimeout(rob,200);
 	}
-	//console.log(param);
 
 }
-
 rob(1);
 visit();
