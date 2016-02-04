@@ -224,9 +224,10 @@ var getData = function(){
 	
 }
 var checkDates = [];
-function getCheckDate(){
+function getCheckDate(day){
+	checkDates[day] = [];
 	for(var i=0;i<=23;i++){
-		checkDates[i] = false;
+		checkDates[day][i] = false;
 	}
 }
 
@@ -235,7 +236,9 @@ var rob = function(start){
 	minute = now.getUTCMinutes();
 	hours = now.getUTCHours();
 	tmphours = hours+8;
+	day = now.getDate();
 	if(tmphours > 24){
+		day = day+1;
 		hours = tmphours-24;
 	}else{
 		hours = tmphours;
@@ -249,10 +252,13 @@ var rob = function(start){
 			data = getData();
 		}
 	}else{
-		if(checkDates.length == 0){
-			getCheckDate();
+		if(typeof(checkDates[day-1])!='undefined' && checkDate[day].length>0){
+			checkDates = [];
 		}
-		if(tmphours < 9 && checkDates[hours] == false){
+		if(checkDates.length==0 || typeof(checkDates[day]) == 'undefined' || checkDates[day].length == 0){
+			getCheckDate(day);
+		}
+		if(tmphours < 9 && checkDates[day][hours] == false){
 			console.log('before data');
 			data = getData();
 			console.log('after data');
