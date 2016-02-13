@@ -252,17 +252,23 @@ var rob = function(start){
 			data = getData();
 		}
 	}else{
-		if(typeof(checkDates[day-1])!='undefined' && checkDate[day].length>0){
-			checkDates = [];
-		}
-		if(checkDates.length==0 || typeof(checkDates[day]) == 'undefined' || checkDates[day].length == 0){
+		//if(typeof(checkDates[day-1])!='undefined' && checkDate[day].length>0){
+		//	checkDates = [];
+		//}
+        tmphhours = parseInt(hours);
+        //console.log(typeof(checkDates[day]));
+		if(typeof(checkDates[day]) == 'undefined' || checkDates[day].length == 0){
 			getCheckDate(day);
 		}
-		if(tmphours < 9 && checkDates[day][hours] == false){
+        if(tmphhours<9){
+            //console.log(day)
+        }
+        //console.log(checkDates[day]);
+		if(tmphhours < 9 && checkDates[day][tmphhours] == false){
 			console.log('before data');
 			data = getData();
 			console.log('after data');
-			checkDates[hours] = true;
+			checkDates[day][tmphhours] = true;
 			param = {};
 		}
 	}
