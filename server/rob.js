@@ -288,6 +288,7 @@ var rob = function(start){
 	}
 	if(typeof(param[hours]) != 'undefined' && param[hours]['success'] != 1){
 		console.log(hours,'robed once');
+        try{
 		robres = HTTP.post(roburl,{params:{luck_id:param[hours]['luck_id'],sign:param[hours]['sign'],user_id:param[hours]['user_id']},headers:{'Content-Type':'application/x-www-form-urlencoded'}});
 		robdata = robres.data;
 		console.log(robdata);
@@ -307,6 +308,9 @@ var rob = function(start){
 		}else{
 			Meteor.setTimeout(rob,200);
 		}
+        }catch(e){
+            rob();
+        }
 	}else{
 		Meteor.setTimeout(rob,200);
 	}
