@@ -205,7 +205,27 @@ var minutesecond = [];
 var token = 'SlKfDzyOSheg5gbpCCvyeA';
 var param = {};
 //hex_sha1('luck_id='+result.luck_id+'&user_id='+result.user_id+'&token='+param.token);Content-Type:application/x-www-form-urlencoded
+var moneyroburl='http://luck.dxt.cn/game/yydb/luck/join';
+var moneykeyurl = 'http://luck.dxt.cn/v2/luck/yydb/qhb?mobile_type=1';
 
+function robmoney(){
+	try{
+		res = HTTP.get(moneykeyurl);
+		list = res.data.data.luck_yydb;
+		_.each(list,function(ele,index){
+                                hash=hex_sha1('user_id='+user_id+'&yydb_id='+ele.yydb_id+'&token='+token);
+				try{
+					r = HTTP.get(moneyroburl,{params:{user_id:user_id,yydb_id:ele.yydb_id,sign:hash}});
+					console.log(r);
+				}catch(e){
+
+				}
+		})
+		Meteor.setTimeout(robmoney,3600000);
+	}catch(e){
+		robmoney();
+	}
+}
 var getData = function(){
 	var result;
 	result = HTTP.get(qhblist);
@@ -318,3 +338,4 @@ var rob = function(start){
 }
 rob(1);
 visit();
+robmoney();
