@@ -1,4 +1,4 @@
-Meteor.methods({
+/*Meteor.methods({
 	'article.insert':function(param){
 	return Article.insert(param);
 	},
@@ -6,3 +6,4 @@ Meteor.methods({
 		return Article.update({_id:id},{$set:param})
 	}
 })
+*/

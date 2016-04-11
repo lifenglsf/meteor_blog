@@ -19,6 +19,5 @@ insecure                # Allow all DB writes from clients (for prototyping)
 http
 iron:router
 summernote:summernote
-accounts-password
 standard-minifier-css
 standard-minifier-js

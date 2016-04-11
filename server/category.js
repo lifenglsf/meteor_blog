@@ -1,4 +1,4 @@
-Meteor.methods({
+/*Meteor.methods({
 'category.insert': function(param){
    console.log(param);
            r = Category.insert(param);
@@ -15,3 +15,4 @@ Meteor.methods({
 }
    
 })
+*/
