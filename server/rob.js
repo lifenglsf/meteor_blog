@@ -233,18 +233,7 @@ var getData = function(){
 	result = HTTP.get(qhblist);
 	return result.data.data;
 }
- function visit(){
-	//console.log(111);
-	HTTP.get('http://mydemotest.meteor.com',function(error,result){
-		if(error){
-		console.log('error');
-		visit();
-		}
-	});
-	var interval = Math.random()*1000*180+1000*300;
-	Meteor.setTimeout(visit,interval);
-	
-}
+
 var checkDates = [];
 function getCheckDate(day){
 	checkDates[day] = [];
@@ -341,4 +330,4 @@ var rob = function(start){
 }
 rob(1);
 //visit();
-//robmoney();
+robmoney();
