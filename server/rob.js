@@ -214,6 +214,8 @@ function robmoney(){
 		list = res.data.data.luck_yydb;
 		_.each(list,function(ele,index){
                                 hash=hex_sha1('user_id='+user_id+'&yydb_id='+ele.yydb_id+'&token='+token);
+                                //console.log('user_id='+user_id+'&yydb_id='+ele.yydb_id+'&token='+token,hash);
+                                //return;
 				try{
 					r = HTTP.get(moneyroburl,{params:{user_id:user_id,yydb_id:ele.yydb_id,sign:hash}});
 					console.log(r);
@@ -309,10 +311,11 @@ var rob = function(start){
 	if(typeof(param[hours]) != 'undefined' && param[hours]['success'] != 1){
 		console.log(hours,'robed once');
         try{
+        	//console.log(param[hours]);
 		robres = HTTP.post(roburl,{params:{luck_id:param[hours]['luck_id'],sign:param[hours]['sign'],user_id:param[hours]['user_id']},headers:{'Content-Type':'application/x-www-form-urlencoded'}});
 		robdata = robres.data;
 		console.log(robdata);
-		if(robdata.status == 0){
+		/*if(robdata.status == 0){
 			param[hours]['success'] = 1
 			Meteor.setTimeout(rob,300);
 		}else if(robdata.status == 412){
@@ -327,9 +330,9 @@ var rob = function(start){
 			Meteor.setTimeout(rob,500);
 		}else{
 			Meteor.setTimeout(rob,200);
-		}
+		}*/
         }catch(e){
-            rob();
+            //rob();
         }
 	}else{
 		Meteor.setTimeout(rob,200);
@@ -337,5 +340,5 @@ var rob = function(start){
 
 }
 rob(1);
-visit();
-robmoney();
+//visit();
+//robmoney();
