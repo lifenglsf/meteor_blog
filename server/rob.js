@@ -304,7 +304,7 @@ var rob = function(start){
 		robres = HTTP.post(roburl,{params:{luck_id:param[hours]['luck_id'],sign:param[hours]['sign'],user_id:param[hours]['user_id']},headers:{'Content-Type':'application/x-www-form-urlencoded'}});
 		robdata = robres.data;
 		console.log(robdata);
-		/*if(robdata.status == 0){
+		if(robdata.status == 0){
 			param[hours]['success'] = 1
 			Meteor.setTimeout(rob,300);
 		}else if(robdata.status == 412){
@@ -319,9 +319,9 @@ var rob = function(start){
 			Meteor.setTimeout(rob,500);
 		}else{
 			Meteor.setTimeout(rob,200);
-		}*/
+		}
         }catch(e){
-            //rob();
+            rob();
         }
 	}else{
 		Meteor.setTimeout(rob,200);
