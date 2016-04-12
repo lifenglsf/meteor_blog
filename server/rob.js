@@ -243,6 +243,7 @@ function getCheckDate(day){
 }
 
 var rob = function(start){
+	console.log('enter');
 	now = new Date();
 	minute = now.getUTCMinutes();
 	hours = now.getUTCHours();
