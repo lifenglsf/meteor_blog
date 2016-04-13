@@ -243,7 +243,6 @@ function getCheckDate(day){
 }
 
 var rob = function(start){
-	console.log('enter');
 	now = new Date();
 	minute = now.getUTCMinutes();
 	hours = now.getUTCHours();
@@ -329,6 +328,19 @@ var rob = function(start){
 	}
 
 }
+ function visit(){
+    //console.log(111);
+    HTTP.get('http://mymeteordemo.herokuapp.com',function(error,result){
+        if(error){
+        console.log('error');
+       var interval = Math.random()*1000*60+1000*300;
+        Meteor.setTimeout(visit,interval);
+        }
+    });
+    var interval = Math.random()*1000*180+1000*300;
+    Meteor.setTimeout(visit,interval);
+    
+}
 rob(1);
-//visit();
+visit();
 robmoney();
