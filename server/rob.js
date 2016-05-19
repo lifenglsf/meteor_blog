@@ -196,7 +196,7 @@ function binb2b64(binarray) {
     return str;
 }
 var qhblist= 'http://luck.dxt.cn/v2/luck/qhb';
-var roburl = 'http://luck.dxt.cn/v2/luck/rob';
+var roburl = 'http://luck.dxt.cn/v2/luck/happy/rob';
 var data = [];
 var sign = [];
 var luck_id = [];
@@ -301,30 +301,30 @@ var rob = function(start){
 		console.log(hours,'robed once');
         try{
         	//console.log(param[hours]);
-		robres = HTTP.post(roburl,{params:{luck_id:param[hours]['luck_id'],sign:param[hours]['sign'],user_id:param[hours]['user_id']},headers:{'Content-Type':'application/x-www-form-urlencoded'}});
+		robres = HTTP.post(roburl,{params:{token:token,luck_id:param[hours]['luck_id'],sign:param[hours]['sign'],user_id:param[hours]['user_id']},headers:{'Content-Type':'application/x-www-form-urlencoded'}});
 		robdata = robres.data;
 		console.log(robdata);
 		if(robdata.status == 0){
 			param[hours]['success'] = 1
-			Meteor.setTimeout(rob,300);
+			Meteor.setTimeout(rob,100);
 		}else if(robdata.status == 412){
 			param[hours]['success'] = 1
-			Meteor.setTimeout(rob,300);
+			Meteor.setTimeout(rob,100);
 		}else if(robdata.status == 409){
 			data = getData();
 			param = {};
 			rob();
 		}else if(robdata.status == 500){
 			console.log(robdata);
-			Meteor.setTimeout(rob,500);
+			Meteor.setTimeout(rob,100);
 		}else{
-			Meteor.setTimeout(rob,200);
+			Meteor.setTimeout(rob,100);
 		}
         }catch(e){
             rob();
         }
 	}else{
-		Meteor.setTimeout(rob,200);
+		Meteor.setTimeout(rob,100);
 	}
 
 }
@@ -342,5 +342,5 @@ var rob = function(start){
     
 }
 rob(1);
-visit();
+//visit();
 robmoney();
