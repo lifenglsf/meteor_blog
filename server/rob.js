@@ -195,14 +195,15 @@ function binb2b64(binarray) {
     }
     return str;
 }
-var qhblist= 'http://luck.dxt.cn/v2/luck/qhb';
-var roburl = 'http://luck.dxt.cn/v2/luck/rob';
+var qhblist= 'http://luck.dxt.cn/v2/luck/yydb/qhb?sign=fbb1db2b970efda8e613df59e5e66fbebb47ea7e&mobile_type=40';
+var roburl = 'http://luck.dxt.cn/v2/luck/happy/rob';
 var data = [];
 var sign = [];
 var luck_id = [];
 var user_id ='1011174';
 var minutesecond = [];
-var token = 'SlKfDzyOSheg5gbpCCvyeA';
+var token = '4EAFZADVQtiCogNLg05PMg';
+//           MjAxNi0wNi0xMDoxMDExMTc0
 var param = {};
 //hex_sha1('luck_id='+result.luck_id+'&user_id='+result.user_id+'&token='+param.token);Content-Type:application/x-www-form-urlencoded
 var moneyroburl='http://luck.dxt.cn/game/yydb/luck/join';
@@ -210,15 +211,23 @@ var moneykeyurl = 'http://luck.dxt.cn/v2/luck/yydb/qhb?mobile_type=1';
 
 function robmoney(){
 	try{
-		res = HTTP.get(moneykeyurl);
+		now = new Date();
+	minute = now.getUTCMinutes();
+	hours = now.getUTCHours();
+	tmphours = hours+8;
+	day = now.getDate();
+		token = checkDates[day]['token']
+		res = HTTP.get('http://luck.dxt.cn/v2/luck/yydb/qhb?mobile_type=1');
 		list = res.data.data.luck_yydb;
+		console.log(list)
 		_.each(list,function(ele,index){
                                 hash=hex_sha1('user_id='+user_id+'&yydb_id='+ele.yydb_id+'&token='+token);
+                                console.log(ele.yydb_id,"===",hash)
 				try{
-					r = HTTP.get(moneyroburl,{params:{user_id:user_id,yydb_id:ele.yydb_id,sign:hash}});
+					r = HTTP.get('http://luck.dxt.cn/game/yydb/luck/join',{params:{user_id:user_id,yydb_id:ele.yydb_id,sign:hash}});
 					console.log(r);
 				}catch(e){
-
+                    console.log('rob error');
 				}
 		})
 		Meteor.setTimeout(robmoney,3600000);
@@ -228,7 +237,7 @@ function robmoney(){
 }
 var getData = function(){
 	var result;
-	result = HTTP.get(qhblist);
+	result = HTTP.get('http://luck.dxt.cn/v2/luck/qhb');
 	return result.data.data;
 }
  function visit(){
@@ -246,11 +255,18 @@ var getData = function(){
 var checkDates = [];
 function getCheckDate(day){
 	checkDates[day] = [];
+	token = login();
+	checkDates[day]['token'] = token;
 	for(var i=0;i<=23;i++){
 		checkDates[day][i] = false;
 	}
 }
 
+var login = function(){
+	robres = HTTP.post('http://user.dxt.cn/v2/login/phone',{params:{phone:'13585884436',password:'123456'},headers:{'Content-Type':'application/x-www-form-urlencoded','cookie':'JSESSIONID=045379D36B62BDEAC8C32B1ECEB80006'}});
+	console.log(robres.data.data.token,"====");
+	return robres.data.data.token
+}
 var rob = function(start){
 	now = new Date();
 	minute = now.getUTCMinutes();
@@ -266,6 +282,10 @@ var rob = function(start){
 	if(hours < 10){
 		hours = '0'+hours;
 	}
+	if(typeof(checkDates[day]) == 'undefined' || checkDates[day].length == 0){
+		getCheckDate(day);
+	}
+	token = checkDates[day]['token'];
 	if(typeof(data) == 'undefined' || data.length == 0){
 		data = getData();
 		while(!data.length){
@@ -277,9 +297,7 @@ var rob = function(start){
 		//}
         tmphhours = parseInt(hours);
         //console.log(typeof(checkDates[day]));
-		if(typeof(checkDates[day]) == 'undefined' || checkDates[day].length == 0){
-			getCheckDate(day);
-		}
+		
         if(tmphhours<9){
             //console.log(day)
         }
@@ -296,7 +314,8 @@ var rob = function(start){
 	_.each(data,function(ele,index){
 		var lid = ele.qhb_time.luck_id;
 		minutesecond.push(ele.qhb_time.start_time);
-		tmpsign = hex_sha1('luck_id='+lid+'&user_id='+user_id+'&token='+token);
+
+		tmpsign = hex_sha1('luck_id='+lid+'&token='+token+'&user_id='+user_id+'&token='+token);
 		tmptime = ele.qhb_time.start_time.split(':');
 		param[tmptime[0]] = {};
 		param[tmptime[0]]['luck_id'] = lid;
@@ -309,33 +328,41 @@ var rob = function(start){
 	if(typeof(param[hours]) != 'undefined' && param[hours]['success'] != 1){
 		console.log(hours,'robed once');
         try{
-		robres = HTTP.post(roburl,{params:{luck_id:param[hours]['luck_id'],sign:param[hours]['sign'],user_id:param[hours]['user_id']},headers:{'Content-Type':'application/x-www-form-urlencoded'}});
+		robres = HTTP.post('http://luck.dxt.cn/v2/luck/happy/rob',{params:{luck_id:param[hours]['luck_id'],sign:param[hours]['sign'],user_id:param[hours]['user_id'],token:token},headers:{'Content-Type':'application/x-www-form-urlencoded','cookie':'JSESSIONID=045379D36B62BDEAC8C32B1ECEB80006'}});
 		robdata = robres.data;
 		console.log(robdata);
 		if(robdata.status == 0){
 			param[hours]['success'] = 1
-			Meteor.setTimeout(rob,300);
+			Meteor.setTimeout(rob,100);
 		}else if(robdata.status == 412){
 			param[hours]['success'] = 1
-			Meteor.setTimeout(rob,300);
+			Meteor.setTimeout(rob,100);
 		}else if(robdata.status == 409){
 			data = getData();
 			param = {};
 			rob();
+		}else if(robdata.status == 403){
+			getCheckDate();
+			Meteor.setTimeout(rob,1000);
 		}else if(robdata.status == 500){
 			console.log(robdata);
-			Meteor.setTimeout(rob,500);
+			Meteor.setTimeout(rob,100);
 		}else{
-			Meteor.setTimeout(rob,200);
+			Meteor.setTimeout(rob,100);
 		}
         }catch(e){
             rob();
         }
 	}else{
-		Meteor.setTimeout(rob,200);
+		Meteor.setTimeout(rob,100);
 	}
 
 }
+//console.log(hex_sha1("luck_id=1283798&token=ElCyKjJTSnaeU8tfTiBLZA&user_id=1011174&token=ElCyKjJTSnaeU8tfTiBLZA"),"===","7d43fcb2b9e968870981737416e295c93fed6ff7");
+//console.log(hex_sha1("user_id=1011174&yydb_id=1446604304491&token=4EAFZADVQtiCogNLg05PMg"),"===","d27b6790ae3dc7cb4b3fddb44cc71414f1566d6f");
+//login();
 rob(1);
-visit();
+//visit();
 robmoney();
+//sign=8571ebefe82745da28f834260d9df92638c6796f&token=6P3qKBPzQG6B10Bz_pgQ1A&luck_id=1283798&user_id=4191616
+//console.log(hex_sha1('luck_id=1283798&user_id=4191616&token=6P3qKBPzQG6B10Bz_pgQ1A'));
