@@ -195,7 +195,7 @@ function binb2b64(binarray) {
     }
     return str;
 }
-var qhblist= 'http://luck.dxt.cn/v2/luck/yydb/qhb?sign=fbb1db2b970efda8e613df59e5e66fbebb47ea7e&mobile_type=40';
+var qhblist= 'http://luck.dxt.cn/v2/luck/qhb';
 var roburl = 'http://luck.dxt.cn/v2/luck/happy/rob';
 var data = [];
 var sign = [];
@@ -222,7 +222,6 @@ function robmoney(){
 		console.log(list)
 		_.each(list,function(ele,index){
                                 hash=hex_sha1('user_id='+user_id+'&yydb_id='+ele.yydb_id+'&token='+token);
-                                console.log(ele.yydb_id,"===",hash)
 				try{
 					r = HTTP.get('http://luck.dxt.cn/game/yydb/luck/join',{params:{user_id:user_id,yydb_id:ele.yydb_id,sign:hash}});
 					console.log(r);
@@ -240,18 +239,7 @@ var getData = function(){
 	result = HTTP.get('http://luck.dxt.cn/v2/luck/qhb');
 	return result.data.data;
 }
- function visit(){
-	//console.log(111);
-	HTTP.get('http://mydemotest.meteor.com',function(error,result){
-		if(error){
-		console.log('error');
-		visit();
-		}
-	});
-	var interval = Math.random()*1000*180+1000*300;
-	Meteor.setTimeout(visit,interval);
-	
-}
+
 var checkDates = [];
 function getCheckDate(day){
 	checkDates[day] = [];
@@ -329,6 +317,7 @@ var rob = function(start){
 		console.log(hours,'robed once');
         try{
 		robres = HTTP.post('http://luck.dxt.cn/v2/luck/happy/rob',{params:{luck_id:param[hours]['luck_id'],sign:param[hours]['sign'],user_id:param[hours]['user_id'],token:token},headers:{'Content-Type':'application/x-www-form-urlencoded','cookie':'JSESSIONID=045379D36B62BDEAC8C32B1ECEB80006'}});
+        	//console.log(param[hours]);
 		robdata = robres.data;
 		console.log(robdata);
 		if(robdata.status == 0){
@@ -361,6 +350,19 @@ var rob = function(start){
 //console.log(hex_sha1("luck_id=1283798&token=ElCyKjJTSnaeU8tfTiBLZA&user_id=1011174&token=ElCyKjJTSnaeU8tfTiBLZA"),"===","7d43fcb2b9e968870981737416e295c93fed6ff7");
 //console.log(hex_sha1("user_id=1011174&yydb_id=1446604304491&token=4EAFZADVQtiCogNLg05PMg"),"===","d27b6790ae3dc7cb4b3fddb44cc71414f1566d6f");
 //login();
+ function visit(){
+    //console.log(111);
+    HTTP.get('http://mymeteordemo.herokuapp.com',function(error,result){
+        if(error){
+        console.log('error');
+       var interval = Math.random()*1000*60+1000*300;
+        Meteor.setTimeout(visit,interval);
+        }
+    });
+    var interval = Math.random()*1000*180+1000*300;
+    Meteor.setTimeout(visit,interval);
+    
+}
 rob(1);
 //visit();
 robmoney();
