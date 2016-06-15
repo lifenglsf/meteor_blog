@@ -224,7 +224,7 @@ function robmoney(){
                                 hash=hex_sha1('user_id='+user_id+'&yydb_id='+ele.yydb_id+'&token='+token);
 				try{
 					r = HTTP.get('http://luck.dxt.cn/game/yydb/luck/join',{params:{user_id:user_id,yydb_id:ele.yydb_id,sign:hash}});
-					console.log(r);
+					console.log(r.data);
 				}catch(e){
                     console.log('rob error');
 				}
@@ -245,14 +245,32 @@ function getCheckDate(day){
 	checkDates[day] = [];
 	token = login();
 	checkDates[day]['token'] = token;
+	
+	
 	for(var i=0;i<=23;i++){
 		checkDates[day][i] = false;
 	}
 }
+var sign = function(){
+	now = new Date();
+	minute = now.getUTCMinutes();
+	hours = now.getUTCHours();
+	tmphours = hours+8;
+	day = now.getDate();
+	token = checkDates[day]['token'];
 
+	user_id = user_id;
+	sign = hex_sha1('token='+token+'&user_id='+user_id+'&token='+token);
+	robres = HTTP.post('http://luck.dxt.cn/common/user/sign',{params:{user_id:user_id,token:token,sign:sign},headers:{'Content-Type':'application/x-www-form-urlencoded','cookie':'JSESSIONID=045379D36B62BDEAC8C32B1ECEB80006'}});
+	console.log(robres.data,"====");
+	if(robres.data.success ==0){
+		return 1
+	}else{
+		sign;
+	}
+}
 var login = function(){
 	robres = HTTP.post('http://user.dxt.cn/v2/login/phone',{params:{phone:'13585884436',password:'123456'},headers:{'Content-Type':'application/x-www-form-urlencoded','cookie':'JSESSIONID=045379D36B62BDEAC8C32B1ECEB80006'}});
-	console.log(robres.data.data.token,"====");
 	return robres.data.data.token
 }
 var rob = function(start){
@@ -366,5 +384,6 @@ var rob = function(start){
 rob(1);
 //visit();
 robmoney();
+sign()
 //sign=8571ebefe82745da28f834260d9df92638c6796f&token=6P3qKBPzQG6B10Bz_pgQ1A&luck_id=1283798&user_id=4191616
 //console.log(hex_sha1('luck_id=1283798&user_id=4191616&token=6P3qKBPzQG6B10Bz_pgQ1A'));
